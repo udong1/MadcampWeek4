@@ -1,9 +1,19 @@
 import Burger from "./Burger";
+import './App.css'
 
 function App() {
   
   
-  return <Burger path="/buster_drone/scene.gltf" />
+  return (
+  <div className="Container">
+    <div className="Upper">
+      <Burger />
+    </div>
+    <div className="Lower">
+      <button className="Start">START</button>
+    </div>
+  </div>
+  )
   
 }
 
