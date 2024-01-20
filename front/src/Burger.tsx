@@ -5,8 +5,10 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import BurgerRecipe from './BurgerRecipe';
 import './App.css'
 import gsap from 'gsap';
+import { useNavigate } from 'react-router-dom';
 
 const Burger: React.FC = () => {
+    const navigate = useNavigate();
     // const burgerMesh = useRef<Three.Group | undefined>(undefined);
     const divRef = useRef<HTMLDivElement>(null)
     const burgerGroupRef = useRef<Three.Group>(new Three.Group())
@@ -139,12 +141,14 @@ const Burger: React.FC = () => {
             y:0.04,
         })
     }
-
+    function moveToMain(){
+        navigate('/main')
+    }
 
     return (
     <div ref={divRef}>
         <div className="Button_container">
-            <button className="Start" onMouseEnter={openBurger} onMouseLeave={closeBurger}>START</button>
+            <button className="Start" onMouseEnter={openBurger} onMouseLeave={closeBurger} onClick={moveToMain}>START</button>
         </div>
     </div>
     );

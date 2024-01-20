@@ -1,0 +1,20 @@
+.Prompt_container{
+    display : flex;
+    width : 80%;
+    height : 20%;
+    position : absolute;
+    background-color : aqua;
+    top : 10%;
+    left : 10%;
+}
+.Prompt{
+    position : relative;
+    background-color : white;
+}
+.Page{
+    width : 100vw;
+    height :100vh;
+}
+.Round{
+    text-align: center;
+}
