@@ -1,38 +1,58 @@
 import { useEffect, useRef, useState } from 'react';
 import * as Three from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import BurgerRecipe from './BurgerRecipe';
 
 
 const Burger : React.FC=()=>{
-    const burgerRef = useRef<HTMLDivElement>(null)
+    const divRef = useRef<HTMLDivElement>(null)
+    const burgerGroupRef = useRef<Three.Group>(new Three.Group())
+    //scene
+    const scene = new Three.Scene();
+    scene.background = new Three.Color('white')
+    //light
+    const light = new Three.DirectionalLight(0xffffff,1)
+    light.position.set(-30,40,10)
+    light.castShadow = true
+    scene.add(light)
+    //floor
+    const floorGeo = new Three.PlaneGeometry(10,10)
+    const floorMat = new Three.MeshStandardMaterial({ color : 0xeeeeee, roughness:0.8, metalness:0.1})
+    const floor = new Three.Mesh(floorGeo, floorMat)
+    floor.rotation.x = -Math.PI / 2
+    floor.position.set(0,-2,0)
+    floor.receiveShadow = true
+    scene.add(floor)
+    //camera
+    const camera = new Three.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0,0,5)
+    camera.lookAt(0,-1,1);
+
 
     
     useEffect(()=>{
         console.log("useEffect")
-        if(burgerRef.current){
 
-            burgerRef.current.innerHTML=""
-            console.log("start")
+        const loader = new GLTFLoader();
 
-            const scene = new Three.Scene();
-            scene.background = new Three.Color('white')
+        BurgerRecipe.forEach((ingredient)=>{
+            console.log(ingredient)
+            loader.load(process.env.PUBLIC_URL+`/stylized_burger/${ingredient}.glb`, (gltf)=>{
+                const temp = gltf.scene
+                temp.position.set(0,-1,0)
+                temp.receiveShadow=true
+                temp.castShadow=true
+                temp.name=ingredient
+                burgerGroupRef.current.add(temp)
+            })
+        })
+        
 
-            const light = new Three.DirectionalLight(0xffffff,1)
-            light.position.set(-30,40,10)
-            light.castShadow = true
-            scene.add(light)
+        scene.add(burgerGroupRef.current)
 
-            const floorGeo = new Three.PlaneGeometry(10,10)
-            const floorMat = new Three.MeshStandardMaterial({ color : 0xeeeeee, roughness:0.8, metalness:0.1})
-            const floor = new Three.Mesh(floorGeo, floorMat)
-            floor.rotation.x = -Math.PI / 2
-            floor.position.set(0,-2,0)
-            floor.receiveShadow = true
-            scene.add(floor)
+        if(divRef.current){
 
-            const camera = new Three.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0,0,5)
-            camera.lookAt(0,-1,1);
+            divRef.current.innerHTML=""
 
             const renderer = new Three.WebGLRenderer({
                 antialias:true
@@ -41,40 +61,11 @@ const Burger : React.FC=()=>{
             renderer.shadowMap.type = Three.PCFSoftShadowMap;
             renderer.shadowMap.autoUpdate = false;
             renderer.toneMapping = Three.ACESFilmicToneMapping;
-            renderer.shadowMap.enabled = true
-            renderer.shadowMap.type = Three.PCFShadowMap
 
-            const directionalLight = new Three.DirectionalLight(0xffffff, 0.5)
-            directionalLight.position.set(-2,2,2)
 
-            directionalLight.shadow.mapSize.width = 1024;
-            directionalLight.shadow.mapSize.height = 1024;
-            directionalLight.shadow.camera.near = 0.5;
-            directionalLight.shadow.camera.far = 50;
-            directionalLight.shadow.camera.top = 5;
-            directionalLight.shadow.camera.bottom = -5;
-            directionalLight.shadow.camera.left = -5;
-            directionalLight.shadow.camera.right = 5;
+            divRef.current.appendChild(renderer.domElement)
 
-            scene.add(directionalLight)
-            directionalLight.castShadow = true
-
-            burgerRef.current.appendChild(renderer.domElement)
-
-            const loader = new GLTFLoader();
-
-            loader.load(process.env.PUBLIC_URL+"/stylized_burger/scene.gltf", (gltf)=>{
-                const burger = gltf.scene
-                burger.position.x=0
-                burger.position.y=-0.5
-                burger.position.z=0
-                console.log("burger", burger.position)
-                burger.receiveShadow=true
-                burger.castShadow=true 
-                scene.add(burger)
-            })
-            
-
+    
             const handleResize = () => {
                 const newWidth = window.innerWidth;
                 const newHeight = window.innerHeight;
@@ -88,7 +79,7 @@ const Burger : React.FC=()=>{
             
             const animate = () =>{
                 requestAnimationFrame(animate)
-                scene.rotation.y += 0.001;
+                burgerGroupRef.current.rotation.y += 0.001;
                 renderer.render(scene, camera)
             }
             handleResize();
@@ -106,7 +97,7 @@ const Burger : React.FC=()=>{
     
     return (
         <div 
-            ref={burgerRef}>
+            ref={divRef}>
         </div>
     )
 
