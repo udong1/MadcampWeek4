@@ -37,10 +37,27 @@ const Burger : React.FC=()=>{
             const renderer = new Three.WebGLRenderer({
                 antialias:true
             });
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = Three.PCFSoftShadowMap;
+            renderer.shadowMap.autoUpdate = false;
             renderer.toneMapping = Three.ACESFilmicToneMapping;
             renderer.shadowMap.enabled = true
             renderer.shadowMap.type = Three.PCFShadowMap
 
+            const directionalLight = new Three.DirectionalLight(0xffffff, 0.5)
+            directionalLight.position.set(-2,2,2)
+
+            directionalLight.shadow.mapSize.width = 1024;
+            directionalLight.shadow.mapSize.height = 1024;
+            directionalLight.shadow.camera.near = 0.5;
+            directionalLight.shadow.camera.far = 50;
+            directionalLight.shadow.camera.top = 5;
+            directionalLight.shadow.camera.bottom = -5;
+            directionalLight.shadow.camera.left = -5;
+            directionalLight.shadow.camera.right = 5;
+
+            scene.add(directionalLight)
+            directionalLight.castShadow = true
 
             burgerRef.current.appendChild(renderer.domElement)
 
