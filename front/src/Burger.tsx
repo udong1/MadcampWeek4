@@ -17,8 +17,22 @@ const Burger : React.FC=()=>{
             const scene = new Three.Scene();
             scene.background = new Three.Color('white')
 
+            const light = new Three.DirectionalLight(0xffffff,1)
+            light.position.set(-30,40,10)
+            light.castShadow = true
+            scene.add(light)
+
+            const floorGeo = new Three.PlaneGeometry(10,10)
+            const floorMat = new Three.MeshStandardMaterial({ color : 0xeeeeee, roughness:0.8, metalness:0.1})
+            const floor = new Three.Mesh(floorGeo, floorMat)
+            floor.rotation.x = -Math.PI / 2
+            floor.position.set(0,-2,0)
+            floor.receiveShadow = true
+            scene.add(floor)
+
             const camera = new Three.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0,-0.5,5);
+            camera.position.set(0,0,5)
+            camera.lookAt(0,-1,1);
 
             const renderer = new Three.WebGLRenderer({
                 antialias:true
@@ -27,6 +41,8 @@ const Burger : React.FC=()=>{
             renderer.shadowMap.type = Three.PCFSoftShadowMap;
             renderer.shadowMap.autoUpdate = false;
             renderer.toneMapping = Three.ACESFilmicToneMapping;
+            renderer.shadowMap.enabled = true
+            renderer.shadowMap.type = Three.PCFShadowMap
 
             const directionalLight = new Three.DirectionalLight(0xffffff, 0.5)
             directionalLight.position.set(-2,2,2)
@@ -49,8 +65,12 @@ const Burger : React.FC=()=>{
 
             loader.load(process.env.PUBLIC_URL+"/stylized_burger/scene.gltf", (gltf)=>{
                 const burger = gltf.scene
-                burger.position.set(0,0.3,0)
-                burger.receiveShadow = true;
+                burger.position.x=0
+                burger.position.y=-0.5
+                burger.position.z=0
+                console.log("burger", burger.position)
+                burger.receiveShadow=true
+                burger.castShadow=true 
                 scene.add(burger)
             })
             
