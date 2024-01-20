@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef} from 'react';
 import * as Three from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import BurgerRecipe from './BurgerRecipe';
@@ -32,27 +32,26 @@ const Burger : React.FC=()=>{
     
     useEffect(()=>{
         console.log("useEffect")
-
+        //burger 생성
         const loader = new GLTFLoader();
-
-        BurgerRecipe.forEach((ingredient)=>{
-            console.log(ingredient)
-            loader.load(process.env.PUBLIC_URL+`/stylized_burger/${ingredient}.glb`, (gltf)=>{
-                const temp = gltf.scene
-                temp.position.set(0,-1,0)
-                temp.receiveShadow=true
-                temp.castShadow=true
-                temp.name=ingredient
-                burgerGroupRef.current.add(temp)
-            })
-        })
+        function loadBurger(){
+            for (const ingredient of BurgerRecipe){
+                console.log(ingredient)
+                    loader.load(process.env.PUBLIC_URL+`/stylized_burger/${ingredient}.glb`, (gltf)=>{
+                        const temp = gltf.scene
+                        temp.position.set(0,-1,0)
+                        temp.receiveShadow=true
+                        temp.castShadow=true
+                        burgerGroupRef.current.add(temp)
+                })   
+            }
+            scene.add(burgerGroupRef.current)
+            console.log("scene add")
+        }
         
-
-        scene.add(burgerGroupRef.current)
+        loadBurger()
 
         if(divRef.current){
-
-            divRef.current.innerHTML=""
 
             const renderer = new Three.WebGLRenderer({
                 antialias:true
@@ -80,6 +79,12 @@ const Burger : React.FC=()=>{
             const animate = () =>{
                 requestAnimationFrame(animate)
                 burgerGroupRef.current.rotation.y += 0.001;
+                const bunBottom = burgerGroupRef.current.getObjectByName("bun_bottom_5")
+                if(bunBottom){
+                    bunBottom.position.y = -0.8
+                } else{
+                    console.log("nothing")
+                }
                 renderer.render(scene, camera)
             }
             handleResize();
@@ -92,7 +97,7 @@ const Burger : React.FC=()=>{
                 renderer.dispose()
             };
         }
-    }, [])
+    },[])
     
     
     return (
