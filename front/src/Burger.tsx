@@ -2,9 +2,12 @@ import { useEffect, useRef} from 'react';
 import * as Three from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import BurgerRecipe from './BurgerRecipe';
+import './App.css'
+import gsap from 'gsap';
 
 
 const Burger : React.FC=()=>{
+
     const divRef = useRef<HTMLDivElement>(null)
     const burgerGroupRef = useRef<Three.Group>(new Three.Group())
     //scene
@@ -26,7 +29,15 @@ const Burger : React.FC=()=>{
     //camera
     const camera = new Three.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0,0,5)
-    camera.lookAt(0,-1,1);
+    camera.lookAt(0,-1,0);
+
+    const renderer = new Three.WebGLRenderer({
+        antialias:true
+    });
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = Three.PCFSoftShadowMap;
+    renderer.shadowMap.autoUpdate = false;
+    renderer.toneMapping = Three.ACESFilmicToneMapping;
 
 
     
@@ -39,7 +50,7 @@ const Burger : React.FC=()=>{
                 console.log(ingredient)
                     loader.load(process.env.PUBLIC_URL+`/stylized_burger/${ingredient}.glb`, (gltf)=>{
                         const temp = gltf.scene
-                        temp.position.set(0,-1,0)
+                        temp.position.set(0,-1.5,0)
                         temp.receiveShadow=true
                         temp.castShadow=true
                         burgerGroupRef.current.add(temp)
@@ -53,17 +64,7 @@ const Burger : React.FC=()=>{
 
         if(divRef.current){
 
-            const renderer = new Three.WebGLRenderer({
-                antialias:true
-            });
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = Three.PCFSoftShadowMap;
-            renderer.shadowMap.autoUpdate = false;
-            renderer.toneMapping = Three.ACESFilmicToneMapping;
-
-
             divRef.current.appendChild(renderer.domElement)
-
     
             const handleResize = () => {
                 const newWidth = window.innerWidth;
@@ -75,20 +76,8 @@ const Burger : React.FC=()=>{
                 renderer.setSize(newWidth, newHeight);
             };
 
-            
-            const animate = () =>{
-                requestAnimationFrame(animate)
-                burgerGroupRef.current.rotation.y += 0.001;
-                const bunBottom = burgerGroupRef.current.getObjectByName("bun_bottom_5")
-                if(bunBottom){
-                    bunBottom.position.y = -0.8
-                } else{
-                    console.log("nothing")
-                }
-                renderer.render(scene, camera)
-            }
             handleResize();
-            animate();
+            startAnimate();
 
             window.addEventListener('resize', handleResize);
 
@@ -99,10 +88,53 @@ const Burger : React.FC=()=>{
         }
     },[])
     
-    
+    const startAnimate = () =>{
+        requestAnimationFrame(startAnimate)
+        burgerGroupRef.current.rotation.y += 0.001;
+        renderer.render(scene, camera)
+    }
+    function openBurger(){
+        console.log("openBurger")
+        openBurgerAnimate()
+    }
+    function closeBurger(){
+        console.log("closeBurger")
+        closeBurgerAnimate()
+    }
+
+    const openBurgerAnimate = () =>{
+        const bunBottom = burgerGroupRef.current.getObjectByName("bun_bottom")
+        const bunCheese = burgerGroupRef.current.getObjectByName("bun_cheese")
+        const onion = burgerGroupRef.current.getObjectByName("onion")
+        gsap.to(bunBottom!!.position,{
+            duration: 0.3,
+            y:-0.25,
+        })
+        gsap.to(bunCheese!!.position, {
+            duration: 0.3,
+            y:-0.25,
+        })
+        gsap.to(onion!!.position,{
+            duration: 0.3,
+            y:-0.25,
+        })
+    }
+    const closeBurgerAnimate = () => {
+        const bunBottom = burgerGroupRef.current.getObjectByName("bun_bottom")
+        gsap.to(bunBottom!!.position,{
+            duration: 0.3,
+            y:0.04,
+        })
+    }
+
+
+
     return (
         <div 
             ref={divRef}>
+            <div className="Button_container">
+                <button className="Start" onMouseEnter={openBurger} onMouseLeave={closeBurger}>START</button>
+            </div>
         </div>
     )
 

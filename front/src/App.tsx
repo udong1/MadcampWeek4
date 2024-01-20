@@ -9,9 +9,6 @@ function App() {
     <div className="Upper">
       <Burger />
     </div>
-    <div className="Lower">
-      <button className="Start">START</button>
-    </div>
   </div>
   )
   
