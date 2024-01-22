@@ -19,16 +19,24 @@ const Burger: React.FC = () => {
     scene.background = null
 
     //light
-    const ambientLight = new Three.AmbientLight(0xffffff, 1);
+    const ambientLight = new Three.AmbientLight(0xFFC0C0, 2);
     scene.add(ambientLight)
 
     const targetObject = new Three.Object3D();
     targetObject.position.set(20, 0, 0); // 원하는 방향으로 빛 방향 조절
     scene.add(targetObject);
 
-    const directionalLight = new Three.DirectionalLight(0xffffff,1)
+    const directionalLight = new Three.DirectionalLight(0xffffff,4)
     directionalLight.position.set(10,20,0)
     directionalLight.castShadow = true
+    directionalLight.shadow.camera.near = 0.1;
+    directionalLight.shadow.camera.far = 100;
+    directionalLight.shadow.camera.top = 5;
+    directionalLight.shadow.camera.right = 5;
+    directionalLight.shadow.camera.bottom = -5;
+    directionalLight.shadow.camera.left = -5;
+    directionalLight.shadow.mapSize.width = 4096;  // 그림자 맵의 너비
+    directionalLight.shadow.mapSize.height = 4096; // 그림자 맵의 높이
     scene.add(directionalLight)
 
     //floor
@@ -52,7 +60,7 @@ const Burger: React.FC = () => {
     });
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = Three.PCFSoftShadowMap;
-    renderer.shadowMap.autoUpdate = false;
+    renderer.shadowMap.autoUpdate = true;
     renderer.toneMapping = Three.ACESFilmicToneMapping;
 
   useEffect(() => {
@@ -63,8 +71,7 @@ const Burger: React.FC = () => {
                 loader.load(process.env.PUBLIC_URL+`/stylized_burger/${ingredient}.glb`, (gltf)=>{
                     const temp = gltf.scene
                     temp.traverse(function(node) {
-                        if (node instanceof Three.Mesh) {       
-                            console.log("메쉬다", node)                                  
+                        if (node instanceof Three.Mesh) {                             
                             node.castShadow = true;
                         }
                     })

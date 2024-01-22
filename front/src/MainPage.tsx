@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import './MainPage.css'
 import { useNavigate } from "react-router-dom"
 import BurgerRecipe from "./BurgerRecipe"
+import MainBurger, { BunBottom, AddIngredient } from "./MainBurger"
+import * as Three from 'three';
 
 function MainPage(){
     const navigate = useNavigate()
@@ -9,13 +11,14 @@ function MainPage(){
     const [userRecipe, setUserRecipe] = useState<string[]>([]) 
     const [round, setRound] = useState<number>(0)
     const [totalScore, setTotalScore] = useState<number>(0)
-    const maxTime = 10
+    const maxTime = 100
     const [time, setTime] = useState<number>(maxTime)
     const [startTime, setStartTime] = useState<number>()
     const [randNum, setRandNum] = useState<number>()
     let timer : NodeJS.Timeout
 
-
+    const scene = new Three.Scene();
+    const group = new Three.Group();
 
     function generator(){
         const max=5
@@ -75,6 +78,8 @@ function MainPage(){
             newRound()
             setStartTime(Date.now())
         } else {
+            // 사용자가 클릭한 재료 추가 
+            AddIngredient(ingredient, scene, group);
             setUserRecipe((prev)=>[...prev, ingredient])
         }
     }
@@ -94,7 +99,6 @@ function MainPage(){
         setUserRecipe([])
         //TODO : bun_bottom만 남기기
     }
-
 
     useEffect(()=>{
         setGame()
@@ -133,6 +137,7 @@ function MainPage(){
                                         </div>)}
                 </div>
             </div>
+            <MainBurger />
             <div className="Ingredient_container">
                 {BurgerRecipe.slice(2).map((item)=>(
                     <button className="Ingredient" onClick={()=>makeBurger(item)}>
