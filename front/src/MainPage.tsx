@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import './MainPage.css'
 import { useNavigate } from "react-router-dom"
+import BurgerRecipe from "./BurgerRecipe"
 
 function MainPage(){
     const navigate = useNavigate()
@@ -8,7 +9,7 @@ function MainPage(){
     const [userRecipe, setUserRecipe] = useState<string[]>([]) 
     const [round, setRound] = useState<number>(0)
     const [success, setSuccess] = useState<number>(0)
-    const [time, setTime] = useState<number>(30)
+    const [time, setTime] = useState<number>(50000)
     let timer : NodeJS.Timeout
 
 
@@ -34,6 +35,7 @@ function MainPage(){
         console.log("startGame")
         setRound((prev)=>prev+1)
         generator()
+        //TODO : bun_bottom 만들기
     } 
     function endGame(){
         console.log("endGame")
@@ -74,9 +76,11 @@ function MainPage(){
         setRound((prev)=>prev+1)
         setUserRecipe([])
         generator()
+        //TODO : bun_bottom만 남기기
     }
     function clearBurger(){
         setUserRecipe([])
+        //TODO : bun_bottom만 남기기
     }
 
 
@@ -104,13 +108,14 @@ function MainPage(){
                 </div>
             </div>
             <div className="Round">{round}</div>
-            <button className="Ingredient" onClick={()=>makeBurger("lettuce")}>양상추</button>
-            <button className="Ingredient" onClick={()=>makeBurger("patty")}>패티</button>
-            <button className="Ingredient" onClick={()=>makeBurger("cheese")}>치즈</button>
-            <button className="Ingredient" onClick={()=>makeBurger("pickle")}>피클</button>
-            <button className="Ingredient" onClick={()=>makeBurger("tomato")}>토마토</button>
-            <button className="Ingredient" onClick={()=>makeBurger("onion")}>양파</button>
-            <button className="Ingredient" onClick={()=>makeBurger("bun_top")}>빵</button>
+            <div className="Ingredient_container">
+                {BurgerRecipe.slice(2).map((item)=>(
+                    <button className="Ingredient" onClick={()=>makeBurger(item)}>
+                        <img className="Ingredient_button"src={process.env.PUBLIC_URL + `/burger_img/${item}.png`} alt={item}/>
+                    </button>
+                ))}
+                <button onClick={()=>clearBurger()}>새로 만들기</button>
+            </div>
             <button className="Reload" onClick={clearBurger}>다시 만들기</button>
             <div>
                 {userRecipe.map((item)=>item)}
