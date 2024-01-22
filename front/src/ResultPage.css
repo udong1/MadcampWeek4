@@ -1,0 +1,19 @@
+.Page{
+    width : 100vw;
+    height : 100vh;
+    background-color : #fafafa;
+    display : flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.Re_button{
+    width : 50%;
+    height : 15%;
+    background-color: #FFA500;
+    border : none;
+    color : #FAFAFA;
+    font-family : 'LOTTERIACHAB', sans-serif;
+    font-size : 40px;
+    border-radius : 30px;
+}

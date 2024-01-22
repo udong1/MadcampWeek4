@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import * as Three from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import BurgerRecipe from './BurgerRecipe';
-import './App.css'
+import './Burger.css'
 import gsap from 'gsap';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,7 +16,7 @@ const Burger: React.FC = () => {
 
     //scene
     const scene = new Three.Scene();
-    scene.background = new Three.Color('white')
+    scene.background = null
 
     //light
     const ambientLight = new Three.AmbientLight(0xffffff, 1);
@@ -247,7 +247,7 @@ const Burger: React.FC = () => {
     }
 
     return (
-    <div ref={divRef}>
+    <div className = "Burger_page" ref={divRef}>
         <div className="Button_container">
             <button className="Start" onMouseEnter={openBurger} onMouseLeave={closeBurger} onClick={moveToMain}>START</button>
         </div>
