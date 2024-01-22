@@ -58,7 +58,7 @@ function MainPage(){
             console.log("endTime", endTime)
             const timeDiff = endTime - startTime!!
             console.log("startTime", startTime)
-            const score = Math.floor(randNum!!/timeDiff*10000)
+            const score = Math.floor(randNum!!*randNum!!*randNum!!/timeDiff*10000)
             console.log("score", score)
             console.log("Timediff", timeDiff)
             if(isEqual([...userRecipe, "bun_top"], prompt)){
