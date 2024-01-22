@@ -14,7 +14,36 @@
 .Page{
     width : 100vw;
     height :100vh;
+    background-color : yellow;
 }
 .Round{
     text-align: center;
+}
+.Ingredient{
+    width : 7vw;
+    height : 7vw;
+    border : none;
+    background-color : white;
+    border-radius: 100%;
+    transition : 0.1s ease-in;
+    padding : 10px;
+}
+.Ingredient:hover{
+    box-shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.5);
+    transform: scale(1.2, 1.2);
+}
+.Ingredient_button{
+    display : block;
+    width : 100%;
+    height: auto;
+}
+.Ingredient_container{
+    position : absolute;
+    width : 80%;
+    display : flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    bottom : 10%;
+    right : 10%;
 }
