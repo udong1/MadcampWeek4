@@ -1,28 +1,13 @@
-
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import * as Three from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
-export const BunBottom = (scene: Three.Scene, group: Three.Group) => {
-        const loader = new GLTFLoader();
-        loader.load(`./stylized_burger/bun_bottom.glb`, (gltf)=>{
-            const temp = gltf.scene
-            temp.traverse(function(node) {
-                if (node instanceof Three.Mesh) {                         
-                    node.castShadow = true;
-                    node.receiveShadow = true;
-                }
-            })            
-            group.add(temp)
-            scene.add(group)
-        })   
-}
 
 var G_ingredient=""
 export const AddIngredient = (ingredient: string, scene: Three.Scene, group: Three.Group) => {
         const loader = new GLTFLoader();
         G_ingredient = ingredient;
-    
+        console.log("G_ingredient called")
         loader.load(`./stylized_burger/${ingredient}.glb`, (gltf)=>{
             const temp = gltf.scene
             temp.position.set(0,1,0)
@@ -33,8 +18,22 @@ export const AddIngredient = (ingredient: string, scene: Three.Scene, group: Thr
                 }
             })
             group.add(temp)
-            scene.add(group)
         })
+}
+
+export const BunBottom = (scene: Three.Scene, group: Three.Group) => {
+    const loader = new GLTFLoader();
+    loader.load(`./stylized_burger/bun_bottom.glb`, (gltf)=>{
+        const temp = gltf.scene
+        temp.traverse(function(node) {
+            if (node instanceof Three.Mesh) {                         
+                node.castShadow = true;
+                node.receiveShadow = true;
+            }
+        })            
+        group.add(temp)
+        scene.add(group)
+    })   
 }
 
 const MainBurger: React.FC = () => {
@@ -42,7 +41,7 @@ const MainBurger: React.FC = () => {
     const burgerGroupRef = useRef<Three.Group>(new Three.Group())
 
     //scene
-    const [scene, setScene] = useState<Three.Scene>(new Three.Scene());
+    const scene = new Three.Scene();
     scene.background = new Three.Color('white')
 
     //light
@@ -94,39 +93,36 @@ const MainBurger: React.FC = () => {
         renderer.render(scene, camera)
     }
     
+    useEffect(()=>{
+        BunBottom(scene, burgerGroupRef.current);
+        if (divRef.current) {   
+            divRef.current.appendChild(renderer.domElement)
+
+            const handleResize = () => {
+                const newWidth = window.innerWidth;
+                const newHeight = window.innerHeight;
+
+                camera.aspect = newWidth / newHeight;
+                camera.updateProjectionMatrix();
+
+                renderer.setSize(newWidth, newHeight);
+            };
+
+            handleResize();
+            startAnimate();
+
+            window.addEventListener('resize', handleResize);
+
+            return () => {
+                window.removeEventListener('resize', handleResize);
+                renderer.dispose();
+            }}
+    },[])
+
     useEffect(() => {
-    //burger 생성
-    scene.children.length = 0;
-
-    const newScene = new Three.Scene();
-    newScene.background = new Three.Color('white');
-    setScene(newScene);
-
-    BunBottom(scene, burgerGroupRef.current);
-    AddIngredient(G_ingredient, scene, burgerGroupRef.current);
-
-    if (divRef.current) {   
-        divRef.current.appendChild(renderer.domElement)
-
-        const handleResize = () => {
-            const newWidth = window.innerWidth;
-            const newHeight = window.innerHeight;
-
-            camera.aspect = newWidth / newHeight;
-            camera.updateProjectionMatrix();
-
-            renderer.setSize(newWidth, newHeight);
-        };
-
-        handleResize();
-        startAnimate();
-
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-            renderer.dispose();
-        }}
+        //burger 생성
+        console.log("G_ingredient changed",G_ingredient)
+        AddIngredient(G_ingredient, scene, burgerGroupRef.current);
     }, [G_ingredient]);
 
     return (

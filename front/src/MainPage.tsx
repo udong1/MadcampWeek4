@@ -20,6 +20,7 @@ function MainPage(){
 
     const scene = new Three.Scene();
     const group = new Three.Group();
+    scene.add(group)
 
 
 
