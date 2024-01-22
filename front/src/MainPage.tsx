@@ -8,19 +8,23 @@ function MainPage(){
     const [prompt, setPrompt] = useState<string[]>([])
     const [userRecipe, setUserRecipe] = useState<string[]>([]) 
     const [round, setRound] = useState<number>(0)
-    const [success, setSuccess] = useState<number>(0)
+    const [totalScore, setTotalScore] = useState<number>(0)
     const maxTime = 1000000000
     const [time, setTime] = useState<number>(maxTime)
+    const [startTime, setStartTime] = useState<number>()
+    const [randNum, setRandNum] = useState<number>()
     let timer : NodeJS.Timeout
+
 
 
     function generator(){
         const max=5
         const min=2
-        const randNum = Math.floor(Math.random() * (max - min + 1)) + min;
+        const rand = Math.floor(Math.random() * (max - min + 1)) + min;
+        setRandNum(rand)
         const newPrompt : string[] = []
         const ingredient = ["patty","cheese","tomato","lettuce","pickle","onion"]
-        for (let i=0; i < randNum ; i++){
+        for (let i=0; i < rand ; i++){
             const randContent = Math.floor(Math.random() * (6));
             newPrompt.push(ingredient[randContent])
         }
@@ -36,6 +40,7 @@ function MainPage(){
         console.log("startGame")
         setRound((prev)=>prev+1)
         generator()
+        setStartTime(Date.now())
         //TODO : bun_bottom 만들기
     } 
     function endGame(){
@@ -49,15 +54,23 @@ function MainPage(){
     function makeBurger(ingredient : string){
         //애니메이션 추가해야함
         if(ingredient === "bun_top"){
+            const endTime = Date.now()
+            console.log("endTime", endTime)
+            const timeDiff = endTime - startTime!!
+            console.log("startTime", startTime)
+            const score = Math.floor(randNum!!/timeDiff*10000)
+            console.log("score", score)
+            console.log("Timediff", timeDiff)
             if(isEqual([...userRecipe, "bun_top"], prompt)){
                 console.log("성공!")
-                setSuccess((prev)=>prev+1)
+                setTotalScore((prev)=>prev+score)
             }
             else{
                 console.log("실패!")
-                //점수 낮추기
+                setTotalScore((prev)=>prev-score)
             }
             newRound()
+            setStartTime(Date.now())
         } else {
             setUserRecipe((prev)=>[...prev, ingredient])
         }
@@ -132,9 +145,8 @@ function MainPage(){
             </div> */}
             <div className="Score_container">
                 <div className="Score">score</div>
-                <div className="Score_num">{success}</div>
+                <div className="Score_num">{totalScore.toString()}</div>
             </div>
-            {/* 다시 만들기로 다시 만듦 top_bun 클릭 시 newRound 시작*/}
         </div>
     )
 }
