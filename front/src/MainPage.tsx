@@ -17,8 +17,15 @@ function MainPage(){
     const [randNum, setRandNum] = useState<number>()
     let timer : NodeJS.Timeout
 
+
     const scene = new Three.Scene();
     const group = new Three.Group();
+
+
+
+    function moveToBurger(){
+        navigate('/')
+    }
 
     function generator(){
         const max=5
@@ -158,7 +165,7 @@ function MainPage(){
             <div className="Logo_container">
                 {/* <img className="Donald" src={process.env.PUBLIC_URL+"/donald.png"} alt="donald"/> */}
                 <div className="Donald_text">donald</div>
-                <img className="Mad" src={process.env.PUBLIC_URL+"/mad.png"} alt="MAD"/>
+                <img className="Mad" src={process.env.PUBLIC_URL+"/mad.png"} alt="MAD" onClick={moveToBurger}/>
             </div>
         </div>
     )
