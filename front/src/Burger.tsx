@@ -247,7 +247,7 @@ const Burger: React.FC = () => {
     }
 
     return (
-    <div className = "Page" ref={divRef}>
+    <div className = "Burger_page" ref={divRef}>
         <div className="Button_container">
             <button className="Start" onMouseEnter={openBurger} onMouseLeave={closeBurger} onClick={moveToMain}>START</button>
         </div>

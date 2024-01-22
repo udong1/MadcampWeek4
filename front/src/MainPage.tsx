@@ -147,6 +147,11 @@ function MainPage(){
                 <div className="Score">score</div>
                 <div className="Score_num">{totalScore.toString()}</div>
             </div>
+            <div className="Logo_container">
+                {/* <img className="Donald" src={process.env.PUBLIC_URL+"/donald.png"} alt="donald"/> */}
+                <div className="Donald_text">donald</div>
+                <img className="Mad" src={process.env.PUBLIC_URL+"/mad.png"} alt="MAD"/>
+            </div>
         </div>
     )
 }
