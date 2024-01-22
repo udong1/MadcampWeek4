@@ -9,7 +9,7 @@ function MainPage(){
     const [userRecipe, setUserRecipe] = useState<string[]>([]) 
     const [round, setRound] = useState<number>(0)
     const [totalScore, setTotalScore] = useState<number>(0)
-    const maxTime = 1000000000
+    const maxTime = 10
     const [time, setTime] = useState<number>(maxTime)
     const [startTime, setStartTime] = useState<number>()
     const [randNum, setRandNum] = useState<number>()
@@ -46,7 +46,10 @@ function MainPage(){
     function endGame(){
         console.log("endGame")
         clearTimeout(timer)
-        navigate('/result')
+        const result = {
+            score : totalScore,
+        }
+        navigate('/result',{state : result})
     }
     function timeCount(){
         setTime((prev)=>prev-1)

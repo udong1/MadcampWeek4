@@ -5,7 +5,7 @@ import ResultPage from "./ResultPage";
 
 function App() {
   
-  
+
   return (
   <div>
     <BrowserRouter>
