@@ -1,12 +1,4 @@
-.Lower{
-  width : 100vw;
-  height: 100vh;
-  bottom : 0;
-  position : absolute;
-  display : flex;
-  justify-content: center;
-  align-items: center;
-}
+
 .Start{
   background: rgba(0,0,0,0);
   color : white;
@@ -18,4 +10,7 @@
 }
 .Button_container{
   position : absolute;
+}
+.Page{
+  background : radial-gradient(#FFDD95,#FFA500);
 }

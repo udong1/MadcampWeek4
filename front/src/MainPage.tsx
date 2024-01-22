@@ -127,10 +127,9 @@ function MainPage(){
                     <img className="Retry"src={process.env.PUBLIC_URL + `/trash.png`} alt="Retry"/>
                 </button>
             </div>
-            <div>
+            {/* <div>
                 {userRecipe.map((item)=>item)}
-            </div>
-            
+            </div> */}
             <div className="Score_container">
                 <div className="Score">score</div>
                 <div className="Score_num">{success}</div>

@@ -1,5 +1,4 @@
 import Burger from "./Burger";
-import './App.css'
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MainPage from "./MainPage";
 import ResultPage from "./ResultPage";
