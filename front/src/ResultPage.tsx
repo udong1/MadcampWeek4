@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import './ResultPage.css';
 import { useEffect, useState } from "react";
+import axios, { AxiosError } from 'axios';
 
 function ResultPage(){
     const navigate = useNavigate()
@@ -33,9 +34,45 @@ function ResultPage(){
                 break;
         }
     }
+    async function fetchRanking(){
+        try {
+            const response = await axios.get('');
+            console.log('Data:', response.data);
+          } catch (error) {
+            if (axios.isAxiosError(error)) {
+                const axiosError = error as AxiosError;
+                if (axiosError.response) {
+                  console.error("Error submitting form : ", error.response?.data);
+                } else {
+                  console.error("Unexpected error : ", error);
+                }
+              } else {
+                console.error("Non-Axios error : ", error);
+              }
+          }
+    }
+    async function sendResult(){
+        try {
+            const response = await axios.post('');
+            console.log('Data:', response.data);
+          } catch (error) {
+            if (axios.isAxiosError(error)) {
+                const axiosError = error as AxiosError;
+                if (axiosError.response) {
+                  console.error("Error submitting form : ", error.response?.data);
+                } else {
+                  console.error("Unexpected error : ", error);
+                }
+              } else {
+                console.error("Non-Axios error : ", error);
+              }
+          }
+    }
 
     useEffect(()=>{
         degreeDiscriminator()
+        sendResult()
+        fetchRanking()
     },[])
     
 
