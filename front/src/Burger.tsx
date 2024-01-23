@@ -1,12 +1,18 @@
 
-import { useEffect, useRef } from 'react';
+import { Dispatch, KeyboardEvent, SetStateAction, useEffect, useRef, useState } from 'react';
 import * as Three from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import BurgerRecipe from './BurgerRecipe';
 import './Burger.css'
 import gsap from 'gsap';
 import { useNavigate } from 'react-router-dom';
+import { useUserInfo } from './UserInfo';
 
+interface Rotation{
+    x : number,
+    y : number,
+    z : number,
+}
 
 const Burger: React.FC = () => {
     const navigate = useNavigate();
@@ -23,7 +29,7 @@ const Burger: React.FC = () => {
     scene.add(ambientLight)
 
     const targetObject = new Three.Object3D();
-    targetObject.position.set(20, 0, 0); // 원하는 방향으로 빛 방향 조절
+    targetObject.position.set(-20, -10, 0); // 원하는 방향으로 빛 방향 조절
     scene.add(targetObject);
 
     const directionalLight = new Three.DirectionalLight(0xffffff,4)
@@ -49,9 +55,9 @@ const Burger: React.FC = () => {
     scene.add(floor)
 
     //camera
-    const camera = new Three.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new Three.PerspectiveCamera(13, window.innerWidth / window.innerHeight, 1, 100);
     camera.position.set(-5,1,-5)
-    camera.lookAt(0,0.5,0);
+    camera.lookAt(0,0.45,0);
 
     // renderer
     const renderer = new Three.WebGLRenderer({
@@ -63,200 +69,261 @@ const Burger: React.FC = () => {
     renderer.shadowMap.autoUpdate = true;
     renderer.toneMapping = Three.ACESFilmicToneMapping;
 
-  useEffect(() => {
-    //burger 생성
-    const loader = new GLTFLoader();
-    function loadBurger(){
-        for (const ingredient of BurgerRecipe){
-                loader.load(process.env.PUBLIC_URL+`/stylized_burger/${ingredient}.glb`, (gltf)=>{
-                    const temp = gltf.scene
-                    temp.traverse(function(node) {
-                        if (node instanceof Three.Mesh) {                             
-                            node.castShadow = true;
+    //animation
+    let slowMotion : boolean = false
+    const [openEnabled, setOpenEnabled] = useState(true)
+    const [closeEnabled, setCloseEnabled] = useState(false)
+    const [closeTransmitted, setCloseTransmitted] = useState(false) 
+    const [openTransmitted, setOpenTransmitted] = useState(false)
+    const [ingredientList, setIngredientList] = useState<Three.Object3D[]>([])
+    const [positionAnimationList, setPositionAnimationList] = useState<gsap.core.Tween[]>([])
+    const [rotationAnimationList, setRotationAnimationList] = useState<gsap.core.Tween[]>([])
+    const [rotationList, setRotationList ] = useState<Rotation[]>([])
+    const maxRotation = 0.2
+    const bunBottomPosition : number = 0.2
+
+    //nickname 설정
+    const [isRegister, setIsRegister] = useState(false)
+    const {userInfo, setNickname} = useUserInfo()
+
+    useEffect(() => {
+        //burger 생성
+        const loader = new GLTFLoader();
+        function loadBurger(){
+            for (const ingredient of BurgerRecipe){
+                    loader.load(process.env.PUBLIC_URL+`/stylized_burger/${ingredient}.glb`, (gltf)=>{
+                        const temp = gltf.scene
+                        temp.traverse(function(node) {
+                            if (node instanceof Three.Mesh) {                             
+                                node.castShadow = true;
+                                node.receiveShadow = true;
+                            }
+                        })
+                        switch (ingredient) {
+                            case 'bun_top':
+                                temp.position.set(0, 0.36, 0);
+                                break;
+                            case 'onion':
+                                temp.position.set(0, 0.26, 0); 
+                                break;
+                            case 'pickle':
+                                temp.position.set(0, 0.26, 0); 
+                                break;
+                            case 'lettuce' :
+                                temp.position.set(0, 0.23, 0); 
+                                break;
+                            case 'tomato' :
+                                temp.position.set(0, 0.20, 0); 
+                                break;
+                            case 'cheese' :
+                                temp.position.set(0, 0.18, 0); 
+                                break;
+                            case 'patty' :
+                                temp.position.set(0, 0.12, 0); 
+                                break;
+                            case 'bun_cheese' :
+                                temp.position.set(0, 0.06, 0); 
+                                break;
+                            case 'bun_bottom' :
+                                temp.position.set(0, 0, 0); 
+                                break;
+                            default:
+                                break;
                         }
-                    })
-                    temp.receiveShadow = true;
-                    switch (ingredient) {
-                        case 'bun_top':
-                            temp.position.set(0, 0.36, 0);
-                            break;
-                        case 'onion':
-                            temp.position.set(0, 0.26, 0); 
-                            break;
-                        case 'pickle':
-                            temp.position.set(0, 0.26, 0); 
-                            break;
-                        case 'lettuce' :
-                            temp.position.set(0, 0.23, 0); 
-                            break;
-                        case 'tomato' :
-                            temp.position.set(0, 0.20, 0); 
-                            break;
-                        case 'cheese' :
-                            temp.position.set(0, 0.18, 0); 
-                            break;
-                        case 'patty' :
-                            temp.position.set(0, 0.12, 0); 
-                            break;
-                        case 'bun_cheese' :
-                            temp.position.set(0, 0.06, 0); 
-                            break;
-                        case 'bun_bottom' :
-                            temp.position.set(0, 0, 0); 
-                            break;
-                        default:
-                            break;
-                    }
-                    burgerGroupRef.current.add(temp)
-            })   
+                        burgerGroupRef.current.add(temp)
+                })   
+            }
+            scene.add(burgerGroupRef.current)
         }
-        scene.add(burgerGroupRef.current)
-    }
     
-    loadBurger()
+        loadBurger()
 
+        if (divRef.current) {   
+            divRef.current.appendChild(renderer.domElement)
 
-    if (divRef.current) {   
-        divRef.current.appendChild(renderer.domElement)
+            const handleResize = () => {
+                const newWidth = window.innerWidth;
+                const newHeight = window.innerHeight;
 
-        const handleResize = () => {
-            const newWidth = window.innerWidth;
-            const newHeight = window.innerHeight;
+                camera.aspect = newWidth / newHeight;
+                camera.updateProjectionMatrix();
 
-            camera.aspect = newWidth / newHeight;
-            camera.updateProjectionMatrix();
+                renderer.setSize(newWidth, newHeight);
+            };
 
-            renderer.setSize(newWidth, newHeight);
-        };
+            handleResize();
+            startAnimate();
 
-        handleResize();
-        startAnimate();
+            window.addEventListener('resize', handleResize);
 
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-            renderer.dispose();
-        }}
+            return () => {
+                window.removeEventListener('resize', handleResize);
+                renderer.dispose();
+            }
+        }
     }, []);
+
+    useEffect(()=>{
+        if(closeEnabled && closeTransmitted){
+            closeBurger()
+        }
+    },[closeEnabled, closeTransmitted])
+    useEffect(()=>{
+        if(openEnabled && openTransmitted){
+            openBurger()
+        }
+    },[openEnabled, openTransmitted])
+
+
+
+
 
     const startAnimate = () =>{
         requestAnimationFrame(startAnimate)
-        burgerGroupRef.current.rotation.y += 0.1;
+        if(slowMotion){
+            burgerGroupRef.current.rotation.y += 0.00005;
+        }
+        else{
+            burgerGroupRef.current.rotation.y += 0.01;
+        }
         renderer.render(scene, camera)
     }
     function openBurger(){
         console.log("openBurger")
+        slowMotion = true
         openBurgerAnimate()
+        setOpenEnabled(false)
     }
     function closeBurger(){
         console.log("closeBurger")
+        slowMotion = false
         closeBurgerAnimate()
+        setCloseEnabled(false)
     }
-
-    const openBurgerAnimate = () =>{
-        const duration = 0.3
-        const bunTop = burgerGroupRef.current.getObjectByName("bun_top")
-        const onion = burgerGroupRef.current.getObjectByName("onion")
-        const pickle = burgerGroupRef.current.getObjectByName("pickle")
-        const lettuce = burgerGroupRef.current.getObjectByName("lettuce")
-        const tomato = burgerGroupRef.current.getObjectByName("tomato")
-        const cheese = burgerGroupRef.current.getObjectByName("cheese")
-        const patty = burgerGroupRef.current.getObjectByName("patty")
-        const bunCheese = burgerGroupRef.current.getObjectByName("bun_cheese")
-        const bunBottom = burgerGroupRef.current.getObjectByName("bun_bottom")
-        gsap.to(bunTop!!.position,{
-            duration: 0.3,
-            y:0.30,
+    function checkEnd(){
+        setCloseTransmitted(true)
+        setOpenTransmitted(false)
+        console.log("Close 대기중")
+    }
+    function checkStart(){
+        setOpenTransmitted(true)
+        setCloseTransmitted(false)
+        console.log("Open 대기중")
+    }
+    const openBurgerAnimate = () => {
+        rotationAnimationList.forEach((item)=>{
+            item.kill()
         })
-        gsap.to(onion!!.position,{
-            duration: 0.3,
-            y:0.24,
+        positionAnimationList.forEach((item)=>{
+            item.kill()
         })
-        gsap.to(pickle!!.position,{
-            duration: 0.3,
-            y:0.18,
+        const tempIngredientList : Three.Object3D[] = []
+        BurgerRecipe.forEach((item) => {
+            const temp = burgerGroupRef.current.getObjectByName(item)
+            temp && tempIngredientList.push(temp)
+            console.log("tempIngredientList", tempIngredientList)
         })
-        gsap.to(lettuce!!.position,{
-            duration: 0.3,
-            y:0.12,
+        const tempPositionAnimationList : gsap.core.Tween[] = []
+        const tempRotationAnimationList : gsap.core.Tween[] = []
+        const tempRotationList : Rotation[] = []
+        tempIngredientList.forEach((item, index)=>{
+            const animationItem = gsap.to(item!!.position,{
+                duration : 1,
+                y: bunBottomPosition+index*0.08,
+                ease : "expo.out",
+                onComplete : () => {
+                    setCloseEnabled(true)
+                }
+            })
+            const newRotation : Rotation = {x : getRandomNum(maxRotation, -maxRotation), 
+                                            y : getRandomNum(maxRotation, -maxRotation), 
+                                            z : getRandomNum(maxRotation, -maxRotation)}
+            tempRotationList.push(newRotation)
+            const animationItem2 = gsap.to(item!!.rotation,{
+                duration : 0.7,
+                x : `+=${newRotation.x}`,
+                y : `+=${newRotation.y}`,
+                z : `+=${newRotation.z}`,
+                ease : "power2.out",
+            })
+            tempPositionAnimationList.push(animationItem)
+            tempRotationAnimationList.push(animationItem2)
         })
-        gsap.to(tomato!!.position,{
-            duration: 0.3,
-            y:0.06,
-        })
-        gsap.to(cheese!!.position,{
-            duration: 0.3,
-            y:0.00,
-        })
-        gsap.to(patty!!.position,{
-            duration: 0.3,
-            y:-0.06,
-        })
-        gsap.to(bunCheese!!.position, {
-            duration: 0.3,
-            y:-0.12,
-        })
-        gsap.to(bunBottom!!.position,{
-            duration: 0.3,
-            y:-0.18,
-        })
+        setIngredientList(tempIngredientList)
+        setRotationList(tempRotationList)
+        setRotationAnimationList(tempRotationAnimationList)
+        setPositionAnimationList(tempPositionAnimationList)
     }
     const closeBurgerAnimate = () => {
-        const bunTop = burgerGroupRef.current.getObjectByName("bun_top")
-        const onion = burgerGroupRef.current.getObjectByName("onion")
-        const pickle = burgerGroupRef.current.getObjectByName("pickle")
-        const lettuce = burgerGroupRef.current.getObjectByName("lettuce")
-        const tomato = burgerGroupRef.current.getObjectByName("tomato")
-        const cheese = burgerGroupRef.current.getObjectByName("cheese")
-        const patty = burgerGroupRef.current.getObjectByName("patty")
-        const bunCheese = burgerGroupRef.current.getObjectByName("bun_cheese")
-        const bunBottom = burgerGroupRef.current.getObjectByName("bun_bottom")
-        gsap.to(bunTop!!.position,{
-            duration: 0.3,
-            y:0.00,
+        rotationAnimationList.forEach((item)=>{
+            item.kill()
+            console.log("killing animation")
         })
-        gsap.to(onion!!.position,{
-            duration: 0.3,
-            y:0.00,
+        positionAnimationList.forEach((item)=>{
+            item.kill()
         })
-        gsap.to(pickle!!.position,{
-            duration: 0.3,
-            y:0.00,
+        const tempPositionAnimationList : gsap.core.Tween[] = []
+        const tempRotationAnimationList : gsap.core.Tween[] = []
+        console.log("ingredientList", ingredientList)
+        ingredientList!!.forEach((item, index)=>{
+            const tempPosition = gsap.to(item!!.position,{
+                duration: 0.3,
+                y:0.0,
+                ease: "expo.in",
+                onComplete : () => {
+                    setOpenEnabled(true)
+                }
+            })
+            const tempRotation = gsap.to(item!!.rotation,{
+                duration : 0.3,
+                x : `-=${rotationList[index].x}`,
+                y : `-=${rotationList[index].y}`,
+                z : `-=${rotationList[index].z}`,
+                ease : "power4.in",
+            })
+            tempPositionAnimationList.push(tempPosition)
+            tempRotationAnimationList.push(tempRotation)
         })
-        gsap.to(lettuce!!.position,{
-            duration: 0.3,
-            y:0.00,
-        })
-        gsap.to(tomato!!.position,{
-            duration: 0.3,
-            y:0.00,
-        })
-        gsap.to(cheese!!.position,{
-            duration: 0.3,
-            y:0.00,
-        })
-        gsap.to(patty!!.position,{
-            duration: 0.3,
-            y:0.00,
-        })
-        gsap.to(bunCheese!!.position, {
-            duration: 0.3,
-            y:0.00,
-        })
-        gsap.to(bunBottom!!.position,{
-            duration: 0.3,
-            y:0.00,
-        })
+        setPositionAnimationList(tempPositionAnimationList)
+        setRotationAnimationList(tempRotationAnimationList)
     }
     function moveToMain(){
         navigate('/main')
     }
+    function getRandomNum(max : number, min : number){
+        return (Math.random()*(max-min))+min;
+    }
+    function handleKeyDown(event : KeyboardEvent<HTMLInputElement>){
+        if(event.key === 'Enter'){
+            setIsRegister(true)
+            event.preventDefault()
+            console.log(userInfo)
+        }
+    }
+    function handleInputChange(event : React.ChangeEvent<HTMLInputElement>){
+        setNickname(event.target.value)
+    }
 
     return (
-    <div className = "Burger_page" ref={divRef}>
-        <div className="Button_container">
-            <button className="Start" onMouseEnter={openBurger} onMouseLeave={closeBurger} onClick={moveToMain}>START</button>
+    <div className = "Burger_page" >
+        <div className="Burger_Logo_container">
+            <img className="Burger_mad" src={process.env.PUBLIC_URL+'/mad.png'} alt="donald"/>
+            <img className="Burger_donald" src={process.env.PUBLIC_URL+'/donald.png'} alt="donald"/>
+        </div>
+        <div className="Burger" ref={divRef}>
+            <div className="Bottom_container">
+                {!isRegister && 
+                    <input 
+                        className="getUserNickname" 
+                        type="text" 
+                        placeholder="enter your nickname"
+                        onChange={handleInputChange} 
+                        onKeyDown={handleKeyDown}/>
+                }
+                {isRegister && 
+                    <button className="Start" onMouseEnter={checkStart} onMouseLeave={checkEnd} onClick={moveToMain}>START</button>
+                }
+            </div>
         </div>
     </div>
     );
