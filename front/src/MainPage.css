@@ -132,17 +132,3 @@
     justify-content: center; 
     flex-direction: column; 
 }
-.Donald{
-    height : 25px;
-}
-.Donald_text{
-    font-family : 'LOTTERIACHAB', sans-serif;
-    color : #FFA500;
-    /* font-size : calc(15px + 2vmin); */
-    font-size : 25px;
-    line-height: 1;
-    margin-top : 10px;
-}
-.Mad{
-    height : 55px;
-}

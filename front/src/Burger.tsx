@@ -153,6 +153,7 @@ const Burger: React.FC = () => {
 
             handleResize();
             startAnimate();
+            document.body.style.overflow = 'hidden'
 
             window.addEventListener('resize', handleResize);
 
@@ -192,12 +193,14 @@ const Burger: React.FC = () => {
         console.log("openBurger")
         slowMotion = true
         openBurgerAnimate()
+        openMadDonald()
         setOpenEnabled(false)
     }
     function closeBurger(){
         console.log("closeBurger")
         slowMotion = false
         closeBurgerAnimate()
+        closeMadDonald()
         setCloseEnabled(false)
     }
     function checkEnd(){
@@ -209,6 +212,39 @@ const Burger: React.FC = () => {
         setOpenTransmitted(true)
         setCloseTransmitted(false)
         console.log("Open 대기중")
+    }
+    function openMadDonald(){
+        gsap.to("#Burger_mad", {
+            duration : 0.7,
+            ease : "expo.out",
+            y : "-=100",
+            x : "-=120",
+            rotation : -10,
+        })
+        gsap.to("#Burger_donald", {
+            duration : 0.7,
+            ease : "expo.out",
+            y : "+=70",
+            x : "+=120",
+            rotation : 15,
+        })
+    }
+    function closeMadDonald(){
+        gsap.to("#Burger_mad", {
+            duration : 0.3,
+            ease : "expo.in",
+            y : 0,
+            x : 0,
+            rotation : 0,
+        })
+        gsap.to("#Burger_donald", {
+            duration : 0.3,
+            ease : "expo.in",
+            y : 0,
+            x : 0,
+            rotation : 0,
+        })
+        
     }
     const openBurgerAnimate = () => {
         rotationAnimationList.forEach((item)=>{
@@ -306,10 +342,8 @@ const Burger: React.FC = () => {
 
     return (
     <div className = "Burger_page" >
-        <div className="Burger_Logo_container">
-            <img className="Burger_mad" src={process.env.PUBLIC_URL+'/mad.png'} alt="donald"/>
-            <img className="Burger_donald" src={process.env.PUBLIC_URL+'/donald.png'} alt="donald"/>
-        </div>
+        <img id="Burger_mad" className="Burger_mad" src={process.env.PUBLIC_URL+'/mad.png'} alt="mad"/>
+        <img id="Burger_donald" className="Burger_donald" src={process.env.PUBLIC_URL+'/donald.png'} alt="donald"/>
         <div className="Burger" ref={divRef}>
             <div className="Bottom_container">
                 {!isRegister && 
