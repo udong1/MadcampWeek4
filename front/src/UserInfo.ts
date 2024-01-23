@@ -1,14 +1,14 @@
 import { atom, useRecoilState } from 'recoil';
 
-type Info =  {
+export type Info =  {
     nickname : string,
     score : number,
-    date : Date
+    date : string
 }
 const defaultInfo : Info = {
     nickname : "",
     score : 0,
-    date : new Date()
+    date : new Date().toString()
 }
 export const UserInfo = atom<Info>({
     key: 'UserInfo',
@@ -24,7 +24,7 @@ export function useUserInfo(){
         setUserInfo((prevUserInfo)=>({...prevUserInfo, score : updateScore}))
     }
     function setDate(){
-        setUserInfo((prevUserInfo)=>({...prevUserInfo, date : new Date()}))
+        setUserInfo((prevUserInfo)=>({...prevUserInfo, date : new Date().toString()}))
     }
 
     return {userInfo, setNickname, setScore, setDate}
