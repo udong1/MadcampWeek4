@@ -8,8 +8,7 @@ import gsap from 'gsap';
 function ResultPage(){
     const navigate = useNavigate()
     const location = useLocation()
-    // const score = location.state.score
-    const score = 2200
+    const score = location.state.score
     const [degree, setDegree] = useState<number>(-1)
     const {userInfo, setDate} = useUserInfo()
     const degreeList = ["< 저세상 요리사 >", "< 그럭저럭 >", "< MadBurger KING >", "< MadBurger GOD >"]
