@@ -5,8 +5,10 @@ import BurgerRecipe from "./BurgerRecipe"
 import { CreateBunBottom } from "./CreateBunBottom"
 import * as Three from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import gsap from 'gsap';
 
 import { useUserInfo } from "./UserInfo"
+import { positional } from "yargs"
 
 
 const MainPage : React.FC = () => {
@@ -16,7 +18,7 @@ const MainPage : React.FC = () => {
     const [userRecipe, setUserRecipe] = useState<string[]>([]) 
     const [round, setRound] = useState<number>(0)
     const [totalScore, setTotalScore] = useState<number>(0)
-    const maxTime = 1000
+    const maxTime = 10
     const [time, setTime] = useState<number>(maxTime)
     const [startTime, setStartTime] = useState<number>()
     const [randNum, setRandNum] = useState<number>()
@@ -171,26 +173,84 @@ const MainPage : React.FC = () => {
         ResetBurger(scene, burgerGroupRef.current, divRef)
     }
 
+    const [prevIngredient, setPrevIngredient] = useState<string>("");
+    const [prevPosition, setPrevPosition] = useState<number>(0.06);
+
     const AddIngredient = (ingredient: string, scene: Three.Scene, group: Three.Group) => {
         const loader = new GLTFLoader();
-        loader.load(`./stylized_burger/${ingredient}.glb`, (gltf)=>{
-            const temp = gltf.scene
-            temp.position.set(0,1,0)
-            temp.traverse(function(node) {
-                if (node instanceof Three.Mesh) {                         
+        loader.load(`./stylized_burger/${ingredient}.glb`, (gltf) => {
+            const temp = gltf.scene;
+            temp.position.set(0, 1, 0);
+
+            // Calculate new position based on the previous ingredient
+            var newPosition = calculateNewPosition(ingredient);
+
+            gsap.to(temp.position, {
+                duration: 0.5,
+                ease: "bounce.out",
+                y: newPosition,
+            });
+            
+            console.log("position", newPosition)
+            if (ingredient != 'patty') 
+                newPosition -= 0.05
+
+            temp.traverse(function (node) {
+                if (node instanceof Three.Mesh) {
                     node.castShadow = true;
                     node.receiveShadow = true;
                 }
-            })
-            group.add(temp)
-        })
-    }
+            });
+
+            group.add(temp);
+
+            // Update the previous ingredient and position
+            setPrevIngredient(ingredient);
+            setPrevPosition(newPosition);
+        });
+    };
+
+    // Function to calculate new position based on the ingredient
+    const calculateNewPosition = (ingredient: string): number => {
+        let newPosition = prevPosition;
+        switch (ingredient) {
+            case 'onion':
+                newPosition += 0.07;
+                break;
+            case 'pickle':
+                newPosition += 0.1;
+                break;
+            case 'lettuce':
+                newPosition += 0.08;
+                break;
+            case 'tomato':
+                newPosition += 0.07;
+                break;
+            case 'cheese':
+                newPosition += 0.06;
+                break;
+            case 'patty':
+                newPosition += 0.1;
+                break;
+            default:
+                break;
+        }
+        return newPosition;
+    };
+
 
     const BunBottom = (scene: Three.Scene, group: Three.Group) => {
+        setPrevPosition(0.0)
         const loader = new GLTFLoader();
         loader.load(`./stylized_burger/bun_bottom.glb`, (gltf) => {
             const temp = gltf.scene
             console.log("BunBottom 함수 동작")
+            temp.position.set(0,1,0)
+            gsap.to(temp.position, {
+                duration: 0.5,
+                ease: "bounce.out",
+                y: 0.0,
+            });
             temp.traverse(function(node) {
                 if (node instanceof Three.Mesh) {                         
                     node.castShadow = true;
