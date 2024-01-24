@@ -332,6 +332,7 @@ const Burger: React.FC = () => {
     function handleKeyDown(event : KeyboardEvent<HTMLInputElement>){
         if(event.key === 'Enter'){
             setIsRegister(true)
+            localStorage.setItem('UserNickname', userInfo.nickname)
             event.preventDefault()
             console.log(userInfo)
         }

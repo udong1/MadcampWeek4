@@ -42,7 +42,12 @@ function ResultPage(){
         try {
             const info = userInfo
             const tempInfo : Info[] = []
-            const request = {userId : info.nickname, userScore : info.score, scoreDate : info.date.toString()}
+            let processedNickname = info.nickname
+            if(processedNickname === ""){
+                processedNickname = localStorage.getItem("UserNickname")? localStorage.getItem("UserNickname")!! : "Mad Donald"
+            }
+            const request = {userId : processedNickname, userScore : info.score, scoreDate : info.date.toString()}
+            console.log("request :", request)
             const response = await axios.post('http://143.248.225.12:3001/searchRanking', request);
             console.log('Data:', response.data);
             response.data.data.forEach((item: { user_id: string; user_score: number; score_date: string; })=>{
@@ -84,7 +89,7 @@ function ResultPage(){
                     <div className="Rank_title">Ranking</div>
                     <div className="Rank_container">
                         {ranking.map((item, index)=>(
-                            <div className="Single_rank">
+                            <div className="Single_rank" key={index}>
                                 <div className="Rank_Num" style={{color : index<3 ? '#FFA550' : '#FFDD95'}}>{index+1}</div>
                                 <div className="Rank_Nickname">{item.nickname}</div>
                                 <div className="Rank_Date">{item.date}</div>
