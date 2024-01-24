@@ -5,8 +5,11 @@ import BurgerRecipe from "./BurgerRecipe"
 import { CreateBunBottom } from "./CreateBunBottom"
 import * as Three from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import gsap from 'gsap';
 
 import { useUserInfo } from "./UserInfo"
+import { positional } from "yargs"
+import { group } from "console"
 
 
 const MainPage : React.FC = () => {
@@ -16,7 +19,7 @@ const MainPage : React.FC = () => {
     const [userRecipe, setUserRecipe] = useState<string[]>([]) 
     const [round, setRound] = useState<number>(0)
     const [totalScore, setTotalScore] = useState<number>(0)
-    const maxTime = 3
+    const maxTime = 30
     const [time, setTime] = useState<number>(maxTime)
     const [startTime, setStartTime] = useState<number>()
     const [randNum, setRandNum] = useState<number>()
@@ -156,14 +159,19 @@ const MainPage : React.FC = () => {
         return arr1.length === arr2.length && arr1.every((value, index) => value === arr2[index])
     }
 
-    function newRound(){
-        //만들어야하는 리스트를 새로 생성 
-        setRound((prev)=>prev+1)
-        setUserRecipe([])
-        generator()
-        //TODO : bun_bottom만 남기기
-        clearBurger()
+    function sleep(ms: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
+      async function newRound() {
+        // 만들어야하는 리스트를 새로 생성 
+        setRound((prev) => prev + 1);
+        setUserRecipe([]);
+        generator();
+      
+        // TODO: bun_bottom만 남기기
+        BunTop(scene, burgerGroupRef.current);
+      }
+      
 
     function clearBurger(){
         setUserRecipe([])
@@ -171,26 +179,92 @@ const MainPage : React.FC = () => {
         ResetBurger(scene, burgerGroupRef.current, divRef)
     }
 
+    const [prevIngredient, setPrevIngredient] = useState<string>("");
+    var [prevPosition, setPrevPosition] = useState<number>(0.05);
+
     const AddIngredient = (ingredient: string, scene: Three.Scene, group: Three.Group) => {
         const loader = new GLTFLoader();
-        loader.load(`./stylized_burger/${ingredient}.glb`, (gltf)=>{
-            const temp = gltf.scene
-            temp.position.set(0,1,0)
-            temp.traverse(function(node) {
-                if (node instanceof Three.Mesh) {                         
+        loader.load(`./stylized_burger/${ingredient}.glb`, (gltf) => {
+            const temp = gltf.scene;
+            temp.position.set(0, 1, 0);
+            
+            console.log("현재 위치", prevPosition, prevIngredient)
+    
+            // Calculate new position based on the previous ingredient
+            var newPosition = calculateNewPosition(ingredient);
+            prevPosition = newPosition
+            // setPrevPosition(newPosition);
+    
+            // Update the previous ingredient and position
+            setPrevIngredient(ingredient);
+            console.log("모델 생성될 자리 계산", prevPosition, ingredient)
+    
+            temp.rotation.set(0, Math.random() * Math.PI * 2, 0);
+
+            // Animate to the new position using gsap.to
+            gsap.to(temp.position, {
+                duration: 0.5,
+                ease: "bounce.out",
+                y: newPosition,
+                onComplete: () => {
+                    // This callback is executed after the animation is complete
+                    // setPrevPosition(newPosition);
+                    var updatePosition = calculateNewPosition(ingredient);
+                    setPrevPosition(updatePosition);
+                }
+            });
+    
+            temp.traverse(function (node) {
+                if (node instanceof Three.Mesh) {
                     node.castShadow = true;
                     node.receiveShadow = true;
                 }
-            })
-            group.add(temp)
-        })
-    }
+            });
+            group.add(temp);
+        });
+    };
+    
+
+    // Function to calculate new position based on the ingredient
+    const calculateNewPosition = (ingredient: string): number => {
+        let newPosition = prevPosition;
+        switch (ingredient) {
+            case 'onion':
+                newPosition += 0.02;
+                break;
+            case 'pickle':
+                newPosition += 0.05;
+                break;
+            case 'lettuce':
+                newPosition += 0.03;
+                break;
+            case 'tomato':
+                newPosition += 0.02;
+                break;
+            case 'cheese':
+                newPosition += 0.01;
+                break;
+            case 'patty':
+                newPosition += 0.05;
+                break;
+            default:
+                break;
+        }
+        return newPosition;
+    };
+
 
     const BunBottom = (scene: Three.Scene, group: Three.Group) => {
+        setPrevPosition(0.05)
         const loader = new GLTFLoader();
         loader.load(`./stylized_burger/bun_bottom.glb`, (gltf) => {
             const temp = gltf.scene
-            console.log("BunBottom 함수 동작")
+            temp.position.set(2,0,0)
+            gsap.to(temp.position, {
+                duration: 0.5,
+                ease: "bounce.out",
+                x: 0.0,
+            });
             temp.traverse(function(node) {
                 if (node instanceof Three.Mesh) {                         
                     node.castShadow = true;
@@ -199,6 +273,39 @@ const MainPage : React.FC = () => {
             })
             group.add(temp)
         })   
+    }
+
+    const BunTop = (scene: Three.Scene, group: Three.Group) => {
+        const loader = new GLTFLoader();
+        loader.load(`./stylized_burger/bun_top.glb`, (gltf) => {
+            const temp = gltf.scene
+            temp.position.set(0,1,0)
+            gsap.to(temp.position, {
+                duration: 0.5,
+                ease: "bounce.out",
+                y: prevPosition+0.1,
+                onComplete: () => {
+                    gsap.to(group.position, {
+                        duration: 0.5, 
+                        x: -2, 
+                        onComplete: () => {
+                          // 애니메이션이 완료된 후에 실행될 코드
+                          // 예를 들어, 해당 그룹을 제거하거나 숨길 수 있음
+                            clearBurger()
+                            group.position.set(0,0,0)
+                        },
+                    });
+                }
+            });
+            temp.traverse(function(node) {
+                if (node instanceof Three.Mesh) {                         
+                    node.castShadow = true;
+                    node.receiveShadow = true;
+                }
+            })
+            group.add(temp)
+        })   
+        setPrevPosition(0.0)
     }
 
     const ResetBurger = (scene: Three.Scene, group: Three.Group, divRef: React.RefObject<HTMLDivElement>) => {
@@ -214,9 +321,22 @@ const MainPage : React.FC = () => {
         }
         BunBottom(scene, group);
     };
+
+    const DeleteAnimation = (group: Three.Group) => {
+        gsap.to(group.position, {
+            duration: 0.5, 
+            x: -2, 
+            onComplete: () => {
+              // 애니메이션이 완료된 후에 실행될 코드
+              // 예를 들어, 해당 그룹을 제거하거나 숨길 수 있음
+              group.visible = false;
+            },
+        });
+    };
     
     useEffect(()=>{
         setGame()
+        setPrevPosition(0.05)
     },[])
 
     useEffect(()=>{
