@@ -16,7 +16,7 @@ const MainPage : React.FC = () => {
     const [userRecipe, setUserRecipe] = useState<string[]>([]) 
     const [round, setRound] = useState<number>(0)
     const [totalScore, setTotalScore] = useState<number>(0)
-    const maxTime = 1000
+    const maxTime = 3
     const [time, setTime] = useState<number>(maxTime)
     const [startTime, setStartTime] = useState<number>()
     const [randNum, setRandNum] = useState<number>()

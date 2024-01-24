@@ -3,15 +3,18 @@ import './ResultPage.css';
 import { useEffect, useState } from "react";
 import axios, { AxiosError } from 'axios';
 import { Info, useUserInfo } from "./UserInfo";
+import gsap from 'gsap';
 
 function ResultPage(){
     const navigate = useNavigate()
     const location = useLocation()
-    const score = location.state.score
-    const [degree, setDegree] = useState<number>(0)
+    // const score = location.state.score
+    const score = 2200
+    const [degree, setDegree] = useState<number>(-1)
     const {userInfo, setDate} = useUserInfo()
-    const degreeList = ["저세상 요리사", "그냥저냥", "MadBurger KING", "MadBurger GOD"]
+    const degreeList = ["< 저세상 요리사 >", "< 그럭저럭 >", "< MadBurger KING >", "< MadBurger GOD >"]
     const [ranking, setRanking] = useState<Info[]>([])
+    const [descriptionColor,setDescriptionColor] = useState<string>()
 
 
     function moveToMain(){
@@ -24,15 +27,20 @@ function ResultPage(){
         switch(true){
             case score<0 :
                 setDegree(0)
+                setDescriptionColor("#FF5A5A")
                 break;
             case score<1000:
                 setDegree(1)
+                setDescriptionColor("#8C8C8C")
                 break;
             case score<2000:
                 setDegree(2)
+                setDescriptionColor("#FFA550")
                 break;
             case score>=2000:
+                console.log("3")
                 setDegree(3)
+                setDescriptionColor("#FFA550")
                 break;
             default:
                 break;
@@ -72,14 +80,107 @@ function ResultPage(){
               }
           }
     }
+    function degree0Animate(){
+        const ani = gsap.to("#Degree_symbol", {
+            duration : 2,
+            ease : "none",
+            repeat : -1,
+            yoyo : true,
+            rotation : -10,
+            transformOrigin : "center bottom",
+        })
+        return () => 
+        {
+            ani.kill()
+        }
+    }
+    function degree1Animate(){
+        let toLeft = true
+        const ani = gsap.to("#Degree_symbol", {
+            duration : 0.7,
+            ease : "none",
+            repeat : -1,
+            yoyo : true,
+            x : toLeft? -10 : 10,
+            onComplete : () => {
+                if(toLeft){
+                    toLeft = false
+                } else {
+                    toLeft = true
+                }
+            }
+        })
+        return () => 
+        {
+            ani.kill()
+        }
+    }
+    function degree2Animate(){
+        const ani = gsap.to("#Degree_symbol", {
+            duration : 1.2,
+            ease : "none",
+            repeat : -1,
+            yoyo : true,
+            height : "40%",
+        })
+        return () => 
+        {
+            ani.kill()
+        }
+    }
+    function degree3Animate(){
+        const ani1 = gsap.to("#Degree_symbol_left", {
+            duration : 1.3,
+            ease : "none",
+            repeat : -1,
+            yoyo : true,
+            rotation: 20,
+            transformOrigin : "100% 0%", 
+        })
+        const ani2 = gsap.to("#Degree_symbol_right", {
+            duration : 1.3,
+            ease : "none",
+            repeat : -1,
+            yoyo : true,
+            rotation: -20,
+            transformOrigin : "0 0",
+        })
+        return () => 
+        {
+            ani1.kill()
+            ani2.kill()
+        }
+    }
+
 
     useEffect(()=>{
         setDate()
         degreeDiscriminator()
         fetchRanking()
     },[])
-    
-
+    useEffect(()=>{
+        switch(degree){
+            case 3 :
+                console.log("start degree3 animation")
+                degree3Animate()
+                break
+            case 2 :
+                console.log("start degree2 animation")
+                degree2Animate()
+                break
+            case 1 : 
+                console.log("start degree1 animation")
+                degree1Animate()
+                break
+            case 0 :
+                console.log("start degree0 animation")
+                degree0Animate()
+                break
+            default :
+                break
+        }
+    },[degree])
+    // 
 
 
     return (
@@ -100,11 +201,24 @@ function ResultPage(){
                 </div>
             </div>
             <div className="My_result_container">
-                <div>
-                    <img className="Degree_img" src={process.env.PUBLIC_URL+`/degree/degree${degree}.png`} alt="img"/>
-                    <div className="Degree">{degreeList[degree]}</div>
+                <div className="Empty"></div>
+                <div className="My_result">
+                    <img className="Degree_hat" src={process.env.PUBLIC_URL+`/result/hat${degree}.png`} alt=""
+                        style={{height : degree===0||degree===3? "20%" : "30%", top : degree===0||degree===3? "-11%":"-23%"}}/>
+                    <img className="Result_background" src={process.env.PUBLIC_URL+`/result/degree${degree}.png`} alt="img"/>
+                    <div className="Degree" style={{color:descriptionColor}}>{degreeList[degree]}</div>
+                    <div className="My_score" style={{color:descriptionColor}}>{score}</div>
+                    {degree<3 && <img id="Degree_symbol" className="Degree_symbol" src={process.env.PUBLIC_URL+`/result/symbol${degree}.png`} alt=""
+                        style={{transform : degree===0? "rotate(5deg)" : "", 
+                                bottom : degree===1? "10%": "5%",
+                                height : degree===0||degree===2? "35%": "25%"}}/>}
+                    {degree===3 && 
+                        <>
+                            <img id="Degree_symbol_left" className="Degree_symbol_left" src={process.env.PUBLIC_URL+`/result/symbol${degree}_left.png`} alt=""/>
+                            <img id="Degree_symbol_right" className="Degree_symbol_right" src={process.env.PUBLIC_URL+`/result/symbol${degree}_right.png`} alt=""/>
+                        </>
+                                    }
                 </div>
-                <div className="My_result">{score}</div>
                 <button className="Re_button" onClick={moveToMain}>RESTART</button>
             </div>
             <div className="Logo_container">
@@ -119,3 +233,4 @@ function ResultPage(){
 
 export default ResultPage
 
+// width : degree===0? "70%":"40%"
