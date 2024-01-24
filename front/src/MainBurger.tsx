@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as Three from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
@@ -7,7 +7,6 @@ var G_ingredient=""
 export const AddIngredient = (ingredient: string, scene: Three.Scene, group: Three.Group) => {
         const loader = new GLTFLoader();
         G_ingredient = ingredient;
-        console.log("G_ingredient called")
         loader.load(`./stylized_burger/${ingredient}.glb`, (gltf)=>{
             const temp = gltf.scene
             temp.position.set(0,1,0)
@@ -21,24 +20,60 @@ export const AddIngredient = (ingredient: string, scene: Three.Scene, group: Thr
         })
 }
 
-export const BunBottom = (scene: Three.Scene, group: Three.Group) => {
+var createBunBottom = true;
+export const BunBottom = (shouldCreate: boolean, scene: Three.Scene, group: Three.Group) => {
+    if (!shouldCreate) {
+        return;
+    }
+    createBunBottom = true;
     const loader = new GLTFLoader();
-    loader.load(`./stylized_burger/bun_bottom.glb`, (gltf)=>{
+    loader.load(`./stylized_burger/bun_bottom.glb`, (gltf) => {
         const temp = gltf.scene
+        console.log("BunBottom 함수 동작")
         temp.traverse(function(node) {
             if (node instanceof Three.Mesh) {                         
                 node.castShadow = true;
                 node.receiveShadow = true;
             }
-        })            
+        })
         group.add(temp)
         scene.add(group)
     })   
 }
 
+export const ResetBurger = (shouldReset: boolean, scene: Three.Scene, group: Three.Group) => {
+    if (shouldReset) {
+      // Remove all objects from the group
+      group.children.forEach(child => {
+        group.remove(child);
+  
+        // Dispose of resources to free up memory if necessary
+        if (child instanceof Three.Mesh) {
+          if (child.geometry) child.geometry.dispose();
+          if (child.material) {
+            // This assumes the material has a `dispose` method
+            // If not, you may need to handle differently based on the material type
+            child.material.dispose();
+          }
+        }
+      });
+  
+      // Remove the group from the scene
+      scene.remove(group);
+  
+      // Create a new group
+      const newGroup = new Three.Group();
+      scene.add(newGroup);
+  
+      // You might also want to reset any other variables or states related to your scene
+    }
+  };
+  
+
 const MainBurger: React.FC = () => {
     const divRef = useRef<HTMLDivElement>(null)
     const burgerGroupRef = useRef<Three.Group>(new Three.Group())
+    const bunBottomRef = useRef<Three.Group>(new Three.Group())
 
     //scene
     const scene = new Three.Scene();
@@ -94,7 +129,7 @@ const MainBurger: React.FC = () => {
     }
     
     useEffect(()=>{
-        BunBottom(scene, burgerGroupRef.current);
+        // BunBottom(scene, burgerGroupRef.current);
         if (divRef.current) {   
             divRef.current.appendChild(renderer.domElement)
 
@@ -119,11 +154,26 @@ const MainBurger: React.FC = () => {
             }}
     },[])
 
+    // ingredient 생성
     useEffect(() => {
-        //burger 생성
-        console.log("G_ingredient changed",G_ingredient)
         AddIngredient(G_ingredient, scene, burgerGroupRef.current);
     }, [G_ingredient]);
+
+    // bun_bottom 생성
+    useEffect(() => {
+        console.log("createBunBottom" , createBunBottom)
+        if (createBunBottom) {
+            BunBottom(true, scene, burgerGroupRef.current)
+            console.log("BunBottom 만들어짐");
+            createBunBottom = false;
+            console.log("createBunBottom 만들고 난 후" , createBunBottom)
+        }
+    }, [createBunBottom])
+
+    // reset Burger 
+    useEffect(() => {
+        ResetBurger(true, scene, burgerGroupRef.current)
+    }, [])
 
     return (
         <div ref={divRef}>
