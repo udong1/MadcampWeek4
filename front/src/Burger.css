@@ -1,16 +1,68 @@
-
 .Start{
   background: rgba(0,0,0,0);
-  color : white;
+  color : #FFA500;
   font-size : 40px;
-  border : 3px solid white;
-  border-radius: 40px;
+  font-family : 'LOTTERIACHAB', sans-serif;
+  border : none;
+  border-bottom : 5px solid #FFA500;
   padding-left : 20px;
   padding-right : 20px;
 }
-.Button_container{
+.Bottom_container{
   position : absolute;
+  bottom : 5%;
+  width : 100%;
+  height : 8%;
+  display : flex;
+  justify-content: center;
+  align-items: center;
 }
 .Burger_page{
-  background : radial-gradient(#FFDD95,#FFA500);
+  background-color : #FAFAFA;
+  z-index : -1;
+  overflow: hidden;
+  width : 100vw;
+  height : 100vh;
+}
+.Burger_mad{
+  height : 40%;
+  width : 60%;
+  position : absolute;
+  top : 5%;
+  z-index : 0;
+  right : 20%;
+  object-fit : contain;
+  overflow: hidden;
+}
+.Burger_donald{
+  height : 25%;
+  width : 80%;
+  right : 10%;
+  position : absolute;
+  top : 50%;
+  z-index : 0;
+  object-fit : contain;
+  overflow: hidden;
+}
+.Burger{
+  position : absolute;
+  z-index : 1;
+}
+.getUserNickname{
+  background: rgba(0,0,0,0);
+  color : #FFA500;
+  font-size : 40px;
+  font-family : 'LOTTERIACHAB', sans-serif;
+  border : none;
+  border-bottom : 5px solid #FFA500;
+  padding-left : 20px;
+  padding-right : 20px;
+  outline : none;
+  text-align: center; 
+}
+.getUserNickname::placeholder{
+  color : #FFA500;
+  font-size : 40px;
+  font-family : 'LOTTERIACHAB', sans-serif;
+  opacity : 0.5;
 }

@@ -8,7 +8,7 @@
 .My_result_container{
     width : 35%;
     height: 100%;
-    background-color: aqua;
+    background-color: #FFA500;
     display : flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -24,9 +24,9 @@
 .Re_button{
     width : 50%;
     height : 10%;
-    background-color: #FFA500;
+    background-color: #FAFAFA;
     border : none;
-    color : white;
+    color : #FFA500;
     font-family : 'LOTTERIACHAB', sans-serif;
     font-size : 30px;
     border-radius : 100px;
@@ -62,8 +62,33 @@
     border-top : 3px solid rgba(255,156,0,0.6);
     border-bottom : 3px solid rgba(255,156,0,0.6);
 }
-.Result{
+.Single_rank{
     height : 10%;
+    display : flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-left : 20px;
+    margin-right : 20px;
+}
+.Rank_Num{
+    width : 10%;
+    font-family : 'LOTTERIACHAB', sans-serif;
+}
+.Rank_Nickname{
+    width : 30%;
+    overflow: hidden;
+    font-family : 'LOTTERIACHAB', sans-serif;
+    color : #8C8C8C;
+}
+.Rank_Date{
+    font-family : 'LOTTERIACHAB', sans-serif;
+    width : 20%;
+    font-size : 10px;
+    color : #C8C8C8;
+}
+.Rank_Score{
+    font-family : 'LOTTERIACHAB', sans-serif;
 }
 .Logo_container{
     width : 25%;
@@ -85,10 +110,10 @@
     /* font-size : calc(15px + 2vmin); */
     font-size : 25px;
     line-height: 1;
+    margin-top : 10px;
 }
 .Mad{
     height : 55px;
-    margin-top : 20px;
 }
 .Mad:hover{
     cursor : pointer;

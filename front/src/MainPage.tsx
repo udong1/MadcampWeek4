@@ -5,15 +5,18 @@ import BurgerRecipe from "./BurgerRecipe"
 import MainBurger, { BunBottom, AddIngredient, ResetBurger } from "./MainBurger"
 import { CreateBunBottom } from "./CreateBunBottom"
 import * as Three from 'three';
-import { render } from "@testing-library/react"
+
+import { useUserInfo } from "./UserInfo"
+
 
 function MainPage(){
     const navigate = useNavigate()
+    const {setScore} = useUserInfo()
     const [prompt, setPrompt] = useState<string[]>([])
     const [userRecipe, setUserRecipe] = useState<string[]>([]) 
     const [round, setRound] = useState<number>(0)
     const [totalScore, setTotalScore] = useState<number>(0)
-    const maxTime = 100
+    const maxTime = 10
     const [time, setTime] = useState<number>(maxTime)
     const [startTime, setStartTime] = useState<number>()
     const [randNum, setRandNum] = useState<number>()
@@ -65,6 +68,7 @@ function MainPage(){
         const result = {
             score : totalScore,
         }
+        setScore(totalScore)
         navigate('/result',{state : result})
     }
     function timeCount(){
@@ -169,8 +173,8 @@ function MainPage(){
             </div>
             <div className="Logo_container">
                 {/* <img className="Donald" src={process.env.PUBLIC_URL+"/donald.png"} alt="donald"/> */}
-                <div className="Donald_text">donald</div>
                 <img className="Mad" src={process.env.PUBLIC_URL+"/mad.png"} alt="MAD" onClick={moveToBurger}/>
+                <div className="Donald_text">donald</div>
             </div>
         </div>
     )
