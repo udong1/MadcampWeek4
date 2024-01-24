@@ -2,8 +2,10 @@ import { useEffect, useState } from "react"
 import './MainPage.css'
 import { useNavigate } from "react-router-dom"
 import BurgerRecipe from "./BurgerRecipe"
-import MainBurger, { BunBottom, AddIngredient } from "./MainBurger"
+import MainBurger, { BunBottom, AddIngredient, ResetBurger } from "./MainBurger"
+import { CreateBunBottom } from "./CreateBunBottom"
 import * as Three from 'three';
+import { render } from "@testing-library/react"
 
 function MainPage(){
     const navigate = useNavigate()
@@ -16,6 +18,7 @@ function MainPage(){
     const [startTime, setStartTime] = useState<number>()
     const [randNum, setRandNum] = useState<number>()
     let timer : NodeJS.Timeout
+
 
 
     const scene = new Three.Scene();
@@ -53,6 +56,8 @@ function MainPage(){
         generator()
         setStartTime(Date.now())
         //TODO : bun_bottom 만들기
+        BunBottom(true, scene, group);
+        console.log("BunBottom 함수 호출")
     } 
     function endGame(){
         console.log("endGame")
@@ -106,6 +111,8 @@ function MainPage(){
     function clearBurger(){
         setUserRecipe([])
         //TODO : bun_bottom만 남기기
+        ResetBurger(true, scene, group);
+        console.log("버거 리셋 호출");
     }
 
     useEffect(()=>{
@@ -120,9 +127,6 @@ function MainPage(){
             endGame()
         }
     },[time])
-    
-    
-    
 
     return (
         <div className="Page">
