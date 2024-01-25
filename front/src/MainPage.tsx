@@ -357,7 +357,7 @@ const MainPage : React.FC = () => {
                 {time>0 && <div className="Timer_container">
                             <div className="Timer" style={{width : `${time/maxTime*100}%`,
                                                             height : "100%", 
-                                                            backgroundColor :`${time<5? "#D75926": "#FFA500"}`,
+                                                            backgroundColor :`${time<5? "#DA4930": "#FFA500"}`,
                                                             position : "relative",
                                                             borderTopRightRadius : `${time===maxTime? "10px":"0px"}`,
                                                             borderTopLeftRadius : `${time===maxTime? "10px":"10px"}`,
