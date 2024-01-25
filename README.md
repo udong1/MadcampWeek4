@@ -2,7 +2,7 @@
 
 game / active / 3D
 
-![logo_icon](https://github.com/udong1/MadcampWeek4/assets/104704651/cab520c6-c6ca-4825-82b5-b097b7f49170)
+<img src="https://github.com/udong1/MadcampWeek4/assets/104704651/cab520c6-c6ca-4825-82b5-b097b7f49170" width="30%"/>
 
 ### 햄버거를 빨리 만들어 1등을 쟁취하자!
 
