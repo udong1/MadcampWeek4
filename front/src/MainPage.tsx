@@ -159,9 +159,6 @@ const MainPage : React.FC = () => {
         return arr1.length === arr2.length && arr1.every((value, index) => value === arr2[index])
     }
 
-    function sleep(ms: number): Promise<void> {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
       async function newRound() {
         // 만들어야하는 리스트를 새로 생성 
         setRound((prev) => prev + 1);
@@ -175,43 +172,27 @@ const MainPage : React.FC = () => {
 
     function clearBurger(){
         setUserRecipe([])
-        //TODO : bun_bottom만 남기기
         ResetBurger(scene, burgerGroupRef.current, divRef)
     }
 
-    const [prevIngredient, setPrevIngredient] = useState<string>("");
-    var [prevPosition, setPrevPosition] = useState<number>(0.05);
-
+    var [prevPosition, setPrevPosition] = useState<number[]>([]);
     const AddIngredient = (ingredient: string, scene: Three.Scene, group: Three.Group) => {
         const loader = new GLTFLoader();
         loader.load(`./stylized_burger/${ingredient}.glb`, (gltf) => {
             const temp = gltf.scene;
             temp.position.set(0, 1, 0);
-            
-            console.log("현재 위치", prevPosition, prevIngredient)
-    
-            // Calculate new position based on the previous ingredient
+
             var newPosition = calculateNewPosition(ingredient);
-            prevPosition = newPosition
-            // setPrevPosition(newPosition);
-    
-            // Update the previous ingredient and position
-            setPrevIngredient(ingredient);
-            console.log("모델 생성될 자리 계산", prevPosition, ingredient)
+            setPrevPosition((prev)=>[...prev, newPosition.newPosition])
+            console.log("생성할 포지션", prevPosition)
+            
     
             temp.rotation.set(0, Math.random() * Math.PI * 2, 0);
 
-            // Animate to the new position using gsap.to
             gsap.to(temp.position, {
                 duration: 0.5,
                 ease: "bounce.out",
-                y: newPosition,
-                onComplete: () => {
-                    // This callback is executed after the animation is complete
-                    // setPrevPosition(newPosition);
-                    var updatePosition = calculateNewPosition(ingredient);
-                    setPrevPosition(updatePosition);
-                }
+                y: prevPosition[prevPosition.length-1]+newPosition.originalPosition,
             });
     
             temp.traverse(function (node) {
@@ -223,39 +204,48 @@ const MainPage : React.FC = () => {
             group.add(temp);
         });
     };
-    
 
     // Function to calculate new position based on the ingredient
-    const calculateNewPosition = (ingredient: string): number => {
-        let newPosition = prevPosition;
+    const calculateNewPosition = (ingredient: string): { newPosition: number, originalPosition: number } => {
+        let newPosition = prevPosition[prevPosition.length - 1];
+        let originalPosition = 0.0;
+    
         switch (ingredient) {
             case 'onion':
-                newPosition += 0.02;
+                newPosition += 0.04;
+                originalPosition = 0.02;
                 break;
             case 'pickle':
-                newPosition += 0.05;
+                newPosition += 0.10;
+                originalPosition = 0.05;
                 break;
             case 'lettuce':
-                newPosition += 0.03;
+                newPosition += 0.06;
+                originalPosition = 0.03;
                 break;
             case 'tomato':
-                newPosition += 0.02;
+                newPosition += 0.04;
+                originalPosition = 0.02;
                 break;
             case 'cheese':
-                newPosition += 0.01;
+                newPosition += 0.02;
+                originalPosition = 0.01;
                 break;
             case 'patty':
-                newPosition += 0.05;
+                newPosition += 0.10;
+                originalPosition = 0.05;
                 break;
             default:
                 break;
         }
-        return newPosition;
+    
+        return { newPosition, originalPosition };
     };
+    
 
 
     const BunBottom = (scene: Three.Scene, group: Three.Group) => {
-        setPrevPosition(0.05)
+        setPrevPosition((prev)=>[...prev, 0.05])
         const loader = new GLTFLoader();
         loader.load(`./stylized_burger/bun_bottom.glb`, (gltf) => {
             const temp = gltf.scene
@@ -283,7 +273,7 @@ const MainPage : React.FC = () => {
             gsap.to(temp.position, {
                 duration: 0.5,
                 ease: "bounce.out",
-                y: prevPosition+0.1,
+                y: prevPosition[prevPosition.length-1]+0.1,
                 onComplete: () => {
                     gsap.to(group.position, {
                         duration: 0.5, 
@@ -305,7 +295,6 @@ const MainPage : React.FC = () => {
             })
             group.add(temp)
         })   
-        setPrevPosition(0.0)
     }
 
     const ResetBurger = (scene: Three.Scene, group: Three.Group, divRef: React.RefObject<HTMLDivElement>) => {
@@ -322,21 +311,9 @@ const MainPage : React.FC = () => {
         BunBottom(scene, group);
     };
 
-    const DeleteAnimation = (group: Three.Group) => {
-        gsap.to(group.position, {
-            duration: 0.5, 
-            x: -2, 
-            onComplete: () => {
-              // 애니메이션이 완료된 후에 실행될 코드
-              // 예를 들어, 해당 그룹을 제거하거나 숨길 수 있음
-              group.visible = false;
-            },
-        });
-    };
     
     useEffect(()=>{
         setGame()
-        setPrevPosition(0.05)
     },[])
 
     useEffect(()=>{
