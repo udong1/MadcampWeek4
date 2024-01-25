@@ -68,6 +68,12 @@
     text-align: center;
     line-height : 160%;
 }
+.Onboarding_hamburger{
+    position : absolute;
+    width : 15%;
+    top : 60%;
+    right : 30%;
+}
 .swiper{
     font-family : 'LOTTERIACHAB', sans-serif;
     position : relative;
