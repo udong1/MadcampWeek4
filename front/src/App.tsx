@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MainPage from "./MainPage";
 import ResultPage from "./ResultPage";
 import {RecoilRoot} from 'recoil';
+import LoadingPage from "./LoadingPage";
 
 function App() {
   
@@ -13,6 +14,7 @@ function App() {
       <RecoilRoot>
         <Routes>
           <Route path="/" element={<div><Burger /></div> }></Route>
+          <Route path="/loading" element={<div><LoadingPage /></div> }></Route>
           <Route path="/main" element={<MainPage />}></Route>
           <Route path="/result" element={<ResultPage />}></Route>
         </Routes>
