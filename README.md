@@ -80,3 +80,8 @@ game / active / 3D
 
 
 결과 화면
+
+<img src="![image](https://github.com/udong1/MadcampWeek4/assets/104704651/5021df59-fc02-4869-9caa-6f160e56e289)" width="50%"/>
+<img src="![image](https://github.com/udong1/MadcampWeek4/assets/104704651/12fb8576-2b97-4c36-9d2c-b0f8202c0932)" width="50%"/>
+<img src="![image](https://github.com/udong1/MadcampWeek4/assets/104704651/b9058c7c-f283-441f-8eb9-c32a1a1a5e4d)" width="50%"/>
+<img src="![image](https://github.com/udong1/MadcampWeek4/assets/104704651/20646ea8-ab33-4b61-8545-aa4d9bcd35c4)" width="50%"/>
