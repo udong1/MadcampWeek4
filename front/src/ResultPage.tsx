@@ -36,7 +36,7 @@ function ResultPage(){
                 setDegree(2)
                 setDescriptionColor("#FFA550")
                 break;
-            case score>=2000:
+            case score>=1400:
                 console.log("3")
                 setDegree(3)
                 setDescriptionColor("#FFA550")
