@@ -28,11 +28,11 @@ function ResultPage(){
                 setDegree(0)
                 setDescriptionColor("#FF5A5A")
                 break;
-            case score<1000:
+            case score<900:
                 setDegree(1)
                 setDescriptionColor("#8C8C8C")
                 break;
-            case score<2000:
+            case score<1400:
                 setDegree(2)
                 setDescriptionColor("#FFA550")
                 break;

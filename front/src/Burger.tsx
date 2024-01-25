@@ -324,7 +324,7 @@ const Burger: React.FC = () => {
         setRotationAnimationList(tempRotationAnimationList)
     }
     function moveToMain(){
-        navigate('/main')
+        navigate('/loading')
     }
     function getRandomNum(max : number, min : number){
         return (Math.random()*(max-min))+min;
