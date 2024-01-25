@@ -55,27 +55,22 @@ game / active / 3D
 ### 4. 예시
 
 시작 화면
+![Untitled](https://github.com/udong1/MadcampWeek4/assets/104704651/6f7969df-134b-4c91-ac88-100ed3f9566c)
+![Untitled 2](https://github.com/udong1/MadcampWeek4/assets/104704651/c55a39b0-ca04-4312-9256-3ccb0da44e8a)
+![Untitled 1](https://github.com/udong1/MadcampWeek4/assets/104704651/d722bafe-4909-4c58-a039-40b9cae78530)
 
-![Untitled](MadDonald%20a10c409f0d0f42a2a7e019ca923d36be/Untitled.png)
-
-![Untitled](MadDonald%20a10c409f0d0f42a2a7e019ca923d36be/Untitled%201.png)
-
-![Untitled](MadDonald%20a10c409f0d0f42a2a7e019ca923d36be/Untitled%202.png)
 
 설명 화면
+![Untitled 3](https://github.com/udong1/MadcampWeek4/assets/104704651/80d2eb55-af5e-4a9d-a6f7-f97deb0559ce)
+![Untitled 5](https://github.com/udong1/MadcampWeek4/assets/104704651/c59ee85f-08df-4e5e-aab7-22eb49263b38)
+![Untitled 4](https://github.com/udong1/MadcampWeek4/assets/104704651/4b6e7367-ac69-4cec-a63c-d9c23cbcb255)
 
-![Untitled](MadDonald%20a10c409f0d0f42a2a7e019ca923d36be/Untitled%203.png)
-
-![Untitled](MadDonald%20a10c409f0d0f42a2a7e019ca923d36be/Untitled%204.png)
-
-![Untitled](MadDonald%20a10c409f0d0f42a2a7e019ca923d36be/Untitled%205.png)
 
 게임 화면
+![Untitled 6](https://github.com/udong1/MadcampWeek4/assets/104704651/f52e6c55-d6cf-4acd-be7e-c6c2157cb3e6)
+![Untitled 8](https://github.com/udong1/MadcampWeek4/assets/104704651/6c1442ad-3c10-4499-88f7-66ddbd453f59)
+![Untitled 7](https://github.com/udong1/MadcampWeek4/assets/104704651/804fbf45-2988-44aa-aa3b-6f2493c4c443)
 
-![Untitled](MadDonald%20a10c409f0d0f42a2a7e019ca923d36be/Untitled%206.png)
 
-![Untitled](MadDonald%20a10c409f0d0f42a2a7e019ca923d36be/Untitled%207.png)
-
-![Untitled](MadDonald%20a10c409f0d0f42a2a7e019ca923d36be/Untitled%208.png)
 
 결과 화면
