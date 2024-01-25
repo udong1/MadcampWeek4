@@ -55,7 +55,7 @@ function ResultPage(){
             }
             const request = {userId : processedNickname, userScore : info.score, scoreDate : info.date.toString()}
             console.log("request :", request)
-            const response = await axios.post('http://143.248.225.12:3001/searchRanking', request);
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/searchRanking`, request);
             console.log('Data:', response.data);
             response.data.data.forEach((item: { user_id: string; user_score: number; score_date: string; })=>{
                 const processDate = item.score_date.split(" ")[1]+"/"+item.score_date.split(" ")[2]+"/"+item.score_date.split(" ")[3]
