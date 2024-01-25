@@ -67,7 +67,7 @@ game / active / 3D
 설명 화면
 
 <img src="https://github.com/udong1/MadcampWeek4/assets/104704651/80d2eb55-af5e-4a9d-a6f7-f97deb0559ce" width="50%"/>
-<img src="hhttps://github.com/udong1/MadcampWeek4/assets/104704651/c59ee85f-08df-4e5e-aab7-22eb49263b38" width="50%"/>
+<img src="https://github.com/udong1/MadcampWeek4/assets/104704651/c59ee85f-08df-4e5e-aab7-22eb49263b38" width="50%"/>
 <img src="https://github.com/udong1/MadcampWeek4/assets/104704651/4b6e7367-ac69-4cec-a63c-d9c23cbcb255" width="50%"/>
 
 
