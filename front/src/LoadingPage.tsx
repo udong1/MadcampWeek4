@@ -46,27 +46,35 @@ function LoadingPage(){
                     modules={[Navigation, Pagination]}
                     onSwiper={(swiper : any)=> console.log(swiper)}>
                     <SwiperSlide >
-                        <div>
                             <img className="Onboarding_img"src={process.env.PUBLIC_URL+"/onboarding/onboarding1.png"} alt=""/>
-                            {/* <div className="Onboarding_description">hihihi</div> */}
-                        </div>
+                            <p className="Onboarding_description">
+                                로고를 클릭하면<br/>
+                                초기화면으로 돌아가요
+                            </p>
                     </SwiperSlide>
                     <SwiperSlide>
                         <div>
                             <img className="Onboarding_img"src={process.env.PUBLIC_URL+"/onboarding/onboarding2.png"} alt=""/>
-                            {/* <div className="Onboarding_description">hihihi</div> */}
+                            <p className="Onboarding_description">
+                                점수를 확인하세요!
+                            </p>
                         </div>
                     </SwiperSlide>
                     <SwiperSlide>
                         <div>
                             <img className="Onboarding_img"src={process.env.PUBLIC_URL+"/onboarding/onboarding3.png"} alt=""/>
-                            
+                            <p className="Onboarding_description">
+                                남은 시간을 확인하고<br/>
+                                주어진 순서대로 재료를 쌓으세요
+                            </p>
                         </div>
                     </SwiperSlide>
                     <SwiperSlide>
                         <div>
                             <img className="Onboarding_img"src={process.env.PUBLIC_URL+"/onboarding/onboarding4.png"} alt=""/>
-                            {/* <div className="Onboarding_description">hihihi</div> */}
+                            <p className="Onboarding_description">
+                                잘못 만든 버거는 휴지통을 눌러 버려주세요
+                            </p>
                         </div>
                     </SwiperSlide>
                 </Swiper>
